@@ -29,7 +29,13 @@ class RecentBookManager {
         var showBooks = savedBooks
         showBooks.removeAll{ $0.title == book.title }
         showBooks.insert(book, at: 0)
-        savedBooks = Array(showBooks.prefix(10))
+//        savedBooks = Array(showBooks.prefix(10)) // 열개가 고정 값으로 뜸
+        
+        if showBooks.count > 8 {
+            savedBooks.removeLast()
+        }
+        
+        savedBooks = showBooks
         
     }
 }

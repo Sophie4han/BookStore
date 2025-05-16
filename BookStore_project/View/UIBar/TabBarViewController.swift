@@ -27,13 +27,13 @@ class TabBarController: UITabBarController {
         
         searchNav.tabBarItem = UITabBarItem (
             title: "검색 탭",
-            image: /*nil*/UIImage(named: "Tab")?.withRenderingMode(.alwaysOriginal),
+            image: nil,
             tag: 0
         )
         
         listNav.tabBarItem = UITabBarItem(
             title: "담은 책 리스트 탭",
-            image: /*nil*/UIImage(named: "Tab2")?.withRenderingMode(.alwaysOriginal),
+            image: nil,
             tag: 0
         )
         
@@ -44,7 +44,7 @@ class TabBarController: UITabBarController {
             effect.backgroundColor = UIColor.white
             effect.configureWithOpaqueBackground()
             effect.stackedLayoutAppearance.normal.titleTextAttributes = [
-                .font: UIFont.systemFont(ofSize: 20, weight: .bold),
+                .font: UIFont.systemFont(ofSize: 18, weight: .bold),
                 .foregroundColor: UIColor.black
             ]
             return effect

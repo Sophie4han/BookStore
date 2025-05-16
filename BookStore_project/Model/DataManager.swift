@@ -11,7 +11,7 @@ struct BookApi {
     
     let myApi = "88468a6bac6216fe1153fe1025268714"
     
-    func fetchData(completion: @escaping ([BookData]) -> Void) {
+    func fetchData(query: String, completion: @escaping ([BookData]) -> Void) {
         
         guard let URL = URL(string: "https://dapi.kakao.com/v3/search/book?query=book") else { return }
         

@@ -15,8 +15,12 @@ class BookViewController: UIViewController {
     lazy var fullCollection = UICollectionView(
         frame: .zero,
         collectionViewLayout: collectionSet()
-        )
+    )
     
+    let searchHeader = SearchResultHeader()
+    let recentlyHeader = RecentlyViewedHeader()
+    
+    var recentData = RecentBookManager.savedBooks
     var data = [BookData]() {
         didSet { fullCollection.reloadData() }
     }
@@ -32,7 +36,7 @@ class BookViewController: UIViewController {
         fullCollection.delegate = self
         fullCollection.dataSource = self
         view.addSubview(fullCollection)
-       
+        
         setConstraints()
         
         fullCollection.register(
@@ -52,24 +56,14 @@ class BookViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: RecentlyViewedHeader.id)
         
-        BookApi().fetchData { books in
+        BookApi().fetchData(query: searchBar.text ?? "") { books in
             DispatchQueue.main.async {
                 self.data = books
             }
-            
-        }
+    }
         
-//        AF.request("https://dapi.kakao.com/v3/search/book?query=swift",
-//                   method: .get,
-//                   headers: ["Authorization": "KakaoAK YOUR_API_KEY"])
-//            .responseDecodable(of: BookStoreData.self) { response in
-//                switch response.result {
-//                case .success(let data):
-//                    print(data.documents.first?.thumbnail ?? "")
-//                case .failure(let error):
-//                    print(error)
-//                }
-//            }
+        searchBar.delegate = self
+
         self.searchBar.setUp()
     }
     
@@ -105,6 +99,17 @@ class BookViewController: UIViewController {
         section.contentInsets = NSDirectionalEdgeInsets(
             top: 10, leading: 10, bottom: 10, trailing: 10)
         
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(50)
+        )
+        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top)
+        
+        section.boundarySupplementaryItems = [sectionHeader]
+        
         // Return
         return section
     }
@@ -126,8 +131,20 @@ class BookViewController: UIViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
         section.contentInsets = NSDirectionalEdgeInsets(
-            top: 10, leading: 10, bottom: 10, trailing: 10)
+            top: 10, leading: 20, bottom: 10, trailing: 20)
         
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(50)
+        )
+
+        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        
+        section.boundarySupplementaryItems = [sectionHeader]
         return section
     }
     
@@ -138,16 +155,18 @@ class BookViewController: UIViewController {
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
-       
+        
         searchBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(10)
+            $0.top.equalTo(view.safeAreaLayoutGuide).inset(-10)
             $0.height.equalTo(70)
             $0.leading.trailing.equalToSuperview().inset(30)
         }
         
-        
+//        recentlyHeader.snp.makeConstraints {
+//            $0.top.equalTo(<#T##other: any ConstraintRelatableTarget##any ConstraintRelatableTarget#>)
+//        }
     }
-
+    
 }
 
 extension BookViewController: BookModalViewControllerDelegate, SearchResultCellDelegate {
@@ -171,41 +190,41 @@ extension BookViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        data.count
-//        if section == 0 {
-//            return 8
-//        } else {
-//            return 3
-//        }
+//        data.count
+        if section == 0 {
+            return recentData.count
+            } else {
+                return data.count
+            }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if indexPath.section == 0 {
-//            guard let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: SearchResultCell.id,
-//                for: indexPath
-//            ) as? SearchResultCell else {
-//                return UICollectionViewCell()
-//            }
-//            cell.dataConnect(data: data[indexPath.item])
-//            return cell
-//        } else {
-//            guard let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: RecentlyViewedCell.id,
-//                for: indexPath) as? RecentlyViewedCell else {
-//                return UICollectionViewCell()
-//            }
-//           cell.delegate = self
-//            return cell
+                if indexPath.section == 1 {
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: SearchResultCell.id,
+                        for: indexPath
+                    ) as? SearchResultCell else {
+                        return UICollectionViewCell()
+                    }
+                    cell.dataConnect(data: data[indexPath.item])
+                    return cell
+                } else {
+                    guard let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: RecentlyViewedCell.id,
+                        for: indexPath) as? RecentlyViewedCell else {
+                        return UICollectionViewCell()
+                    }
+                    cell.setData(data: recentData[indexPath.item])
+                    return cell
+                }
+//        guard let cell = collectionView.dequeueReusableCell(
+//            withReuseIdentifier: SearchResultCell.id,
+//            for: indexPath
+//        ) as? SearchResultCell else {
+//            return UICollectionViewCell()
 //        }
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SearchResultCell.id,
-            for: indexPath
-        ) as? SearchResultCell else {
-            return UICollectionViewCell()
-        }
-        cell.dataConnect(data: data[indexPath.item])
-        return cell
+//        cell.dataConnect(data: data[indexPath.item])
+       
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -232,20 +251,50 @@ extension BookViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        let chooseBook = data[indexPath.item]
+        RecentBookManager.add(book: chooseBook)
+        
+        fullCollection.reloadData()
+        
         let modal = BookModalViewController()
         
+        modal.setData(data: data[indexPath.item])
         modal.delegate = self
         modal.selectIndex = indexPath.item
         present(modal, animated: true)
         
+        let cart = data[indexPath.item]
+        RecentBookManager.add(book: cart)
+      
     }
     
+}
+
+extension BookViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let explore = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !explore.isEmpty else {
+            data = []
+            fullCollection.reloadData()
+            return
+        }
+        
+        BookApi().fetchData(query: explore) { books in
+            DispatchQueue.main.async {
+                self.data = books
+                self.fullCollection.reloadData()
+            }
+            
+        }
+    }
 }
 
 

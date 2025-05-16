@@ -40,16 +40,13 @@ class SearchBar: UISearchBar, UISearchBarDelegate {
         searchArea.leftView = nil
         searchArea.leftViewMode = .never
         
-        let icon = UIImageView(image: UIImage(named: "180"))
+        let icon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
         icon.contentMode = .scaleAspectFill
+        icon.tintColor = .darkGray
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         
-        let container = UIView(frame: CGRect(x: 0, y: 0, width: 28, height: 28))
-        icon.center = container.center
-        container.addSubview(icon)
-        
-        searchArea.rightView = container
+        searchArea.rightView = icon
         searchArea.rightViewMode = .always
         
     }

@@ -14,16 +14,20 @@ class AddCell:  UITableViewCell {
     
     let bookTitle: UILabel = {
         let title = UILabel()
+        title.font = .systemFont(ofSize: 19, weight: .bold)
         return title
     }()
     
     let bookPrice: UILabel = {
         let price = UILabel()
+        price.font = .systemFont(ofSize: 15)
         return price
     }()
     
     let bookAuthor: UILabel = {
         let author = UILabel()
+        author.font = .systemFont(ofSize: 15)
+        author.textColor = .darkGray
         return author
     }()
 
@@ -45,18 +49,19 @@ class AddCell:  UITableViewCell {
     func setConstraints() {
         
         bookTitle.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(5)
-            $0.leading.equalToSuperview().inset(10)
+            $0.top.equalToSuperview().inset(15)
+            $0.leading.equalToSuperview().inset(15)
         }
         
         bookAuthor.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(15)
-            $0.leading.equalTo(bookTitle.snp.trailing).offset(10)
+            $0.top.equalTo(bookTitle.snp.bottom).offset(10)
+            $0.leading.equalToSuperview().offset(15)
+//            $0.centerX.equalToSuperview()
         }
         
         bookPrice.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(10)
-            $0.trailing.equalToSuperview().inset(10)
+            $0.top.equalTo(bookTitle.snp.bottom).offset(10)
+            $0.trailing.equalToSuperview().inset(16)
         }
     }
     

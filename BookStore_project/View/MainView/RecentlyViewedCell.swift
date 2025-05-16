@@ -20,12 +20,15 @@ class RecentlyViewedCell: UICollectionViewCell {
     let thumbnail: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
+        image.layer.cornerRadius = image.frame.width / 2
+        image.clipsToBounds = true
         return image
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(thumbnail)
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -35,7 +38,9 @@ class RecentlyViewedCell: UICollectionViewCell {
     func setConstraints() {
         
         thumbnail.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.center.equalToSuperview()
+            $0.height.equalTo(70)
+            $0.width.equalTo(40)
         }
     }
     
