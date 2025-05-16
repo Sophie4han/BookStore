@@ -27,7 +27,7 @@ class SearchResultHeader: UICollectionReusableView {
         
         searchResult.frame.origin = CGPoint(x: 10, y: 0)
         searchResult.sizeToFit()
-        searchResult.isHidden = true
+//        searchResult.isHidden = true
         
     }
     
