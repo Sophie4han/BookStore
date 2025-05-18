@@ -20,6 +20,10 @@ class BookViewController: UIViewController {
     let searchHeader = SearchResultHeader()
     let recentlyHeader = RecentlyViewedHeader()
     
+    // recentData라는 변수에 RecentBookManager.savedBooks라는 값을 넣어서
+    // RecentBookManager.savedBooks이 값을 가져올 때 get 실행
+    // get에 있는 UserDefaults에서 저장된 데이터가 실행됨
+    // 결론적으로 UserDefaults에 있는 데이터가 data 변수에 들어감..
     var recentData = RecentBookManager.savedBooks
     var data = [BookData]() {
         didSet { fullCollection.reloadData() }
@@ -56,11 +60,11 @@ class BookViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: RecentlyViewedHeader.id)
         
-        BookApi().fetchData(query: searchBar.text ?? "") { books in
-            DispatchQueue.main.async {
-                self.data = books
-            }
-    }
+//        BookApi().fetchData(query: searchBar.text ?? "") { books in
+//            DispatchQueue.main.async {
+//                self.data = books
+//            }
+//    }
         
         searchBar.delegate = self
 
@@ -190,7 +194,7 @@ extension BookViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        data.count
+
         if section == 0 {
             return recentData.count
             } else {
@@ -217,13 +221,7 @@ extension BookViewController: UICollectionViewDelegate, UICollectionViewDataSour
                     cell.setData(data: recentData[indexPath.item])
                     return cell
                 }
-//        guard let cell = collectionView.dequeueReusableCell(
-//            withReuseIdentifier: SearchResultCell.id,
-//            for: indexPath
-//        ) as? SearchResultCell else {
-//            return UICollectionViewCell()
-//        }
-//        cell.dataConnect(data: data[indexPath.item])
+
        
     }
     
@@ -271,7 +269,7 @@ extension BookViewController: UICollectionViewDelegate, UICollectionViewDataSour
         present(modal, animated: true)
         
         let cart = data[indexPath.item]
-        RecentBookManager.add(book: cart)
+        BookCartManager.cart(book: cart)
       
     }
     

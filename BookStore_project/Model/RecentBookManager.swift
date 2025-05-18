@@ -10,7 +10,11 @@ import Foundation
 class RecentBookManager {
         
         static let key = "recentBooks"
-    
+    /*
+     계산 프로퍼티에서 get, set
+     savedBook = data를 넣으면 set 실행된다
+     savedBook라는 프로퍼티를 가져오면 get이 실행된다
+     */
         static var savedBooks: [BookData] {
         
         get {
@@ -35,6 +39,9 @@ class RecentBookManager {
             savedBooks.removeLast()
         }
         
+        // savedBooks에다가 showBooks를 넣어줌
+        // set이 실행됨
+        // = UserDefaults에 저장하는 코드 실행
         savedBooks = showBooks
         
     }

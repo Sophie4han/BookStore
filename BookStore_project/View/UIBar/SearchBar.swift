@@ -23,7 +23,7 @@ class SearchBar: UISearchBar, UISearchBarDelegate {
     func setUp() {
         
         backgroundColor = .white
-        self.delegate = self
+//        self.delegate = self
         self.clipsToBounds = true
         self.layer.cornerRadius = 20
         self.layer.borderColor = UIColor.black.cgColor
